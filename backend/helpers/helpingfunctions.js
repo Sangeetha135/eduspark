@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const transcribeAudio = (audioPath, outputPath, subtitlepath) => {
   return new Promise((resolve, reject) => {
-    const command = `python C:\\Users\\sange\\Desktop\\hackathon\\EduSpark-main\\open-ai\\whisper-script.py "${audioPath}" "${outputPath}"  --model medium `;
+    const command = `python C:\\Users\\saikr\\EduSpark\\open-ai\\whisper-script.py "${audioPath}" "${outputPath}"  --model medium `;
     console.log("Executing:", command);
 
     exec(command, (error, stdout, stderr) => {
@@ -23,7 +23,7 @@ export const transcribeAudio = (audioPath, outputPath, subtitlepath) => {
 export const extractAudio = (videoUrl, audioPath) => {
   return new Promise((resolve, reject) => {
     exec(
-      `"C:\\ffmpeg\\ffmpeg.exe" -i "${videoUrl}" -vn -acodec pcm_s16le "${audioPath}"`,
+      `"C:\\ffmpeg\\ffmpeg-7.1-essentials_build\\bin\\ffmpeg.exe" -i "${videoUrl}" -vn -acodec pcm_s16le "${audioPath}"`,
       (error) => {
         if (error) reject(error);
         else resolve();
@@ -85,72 +85,94 @@ export const generateQuiz = async (storyText) => {
   }
 };
 
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const API_URL =
+  "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent";
+
+// Function to split array into chunks
+const chunkArray = (arr, size) => {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+};
+
+// Extract generated text
 export const generatesubtitle = async (subtitles, language) => {
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  const API_URL =
-    "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent";
-
   try {
-    const prompt = `
-      Convert the following subtitles: ${JSON.stringify(
-        subtitles
-      )} to **${language}**.
-      Rules:
-      1. Keep start and end timestamps EXACTLY as original.
-      2. ONLY translate the 'text' field, do NOT modify start/end timestamps.
-      3. Respond STRICTLY with a valid JSON array in this exact format:
-         [{"start": 0.0, "end": 2.0, "text": "..."}, ...]
-      4. NO explanations, NO markdown, NO extra formatting—just JSON.
-    `;
+    const subtitleChunks = chunkArray(subtitles, 10); // Process 10 subtitles at a time
+    let translations = [];
 
-    const response = await axios.post(
-      `${API_URL}?key=${GEMINI_API_KEY}`,
-      { contents: [{ parts: [{ text: prompt }] }] },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    for (const chunk of subtitleChunks) {
+      let parsed = null;
+      let attempts = 3;
 
-    // Extract generated text
-    const generatedText =
-      response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    // console.log("Raw AI Response:", generatedText);
+      while (attempts-- > 0) {
+        try {
+          const prompt = `
+                Convert the following subtitles: ${JSON.stringify(
+                  chunk
+                )} to *${language}*.
+                Rules:
+                1. Keep start and end timestamps EXACTLY as original.
+                2. ONLY translate the 'text' field, do NOT modify start/end timestamps.
+                3. Respond STRICTLY with a valid JSON array in this exact format:
+                   [{"start": 0.0, "end": 2.0, "text": "..."}, ...]
+                4. NO explanations, NO markdown, NO extra formatting—just JSON.
+              `;
 
-    // Extract JSON array from AI response
-    const jsonMatch = generatedText.match(/(\[.*\])/s);
-    if (!jsonMatch) {
-      console.error("AI did not return valid JSON:", generatedText);
-      throw new Error("No valid JSON found in AI response");
-    }
+          const response = await axios.post(
+            `${API_URL}?key=${GEMINI_API_KEY}`,
+            {
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0 },
+            },
+            { headers: { "Content-Type": "application/json" } }
+          );
 
-    const cleanedText = jsonMatch[0];
-    // console.log("Extracted JSON:", cleanedText);
+          const generatedText =
+            response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-    // Parse and validate JSON
-    const parsed = JSON.parse(cleanedText);
+          // Extract JSON safely
+          const jsonStart = generatedText.indexOf("[");
+          const jsonEnd = generatedText.lastIndexOf("]") + 1;
+          const cleanedText = generatedText.substring(jsonStart, jsonEnd);
 
-    if (!Array.isArray(parsed)) {
-      throw new Error("Response is not an array");
-    }
-    if (parsed.length !== subtitles.length) {
-      throw new Error("Array length mismatch");
-    }
+          parsed = JSON.parse(cleanedText);
 
-    parsed.forEach((item, index) => {
-      if (
-        typeof item.start !== "number" ||
-        typeof item.end !== "number" ||
-        typeof item.text !== "string"
-      ) {
-        throw new Error(`Invalid format at index ${index}`);
+          // Validate JSON structure
+          if (!Array.isArray(parsed) || parsed.length !== chunk.length) {
+            throw new Error("Array length mismatch or invalid JSON");
+          }
+
+          parsed.forEach((item, index) => {
+            if (
+              typeof item.start !== "number" ||
+              typeof item.end !== "number" ||
+              typeof item.text !== "string"
+            ) {
+              throw new Error(`Invalid format at index ${index}`);
+            }
+            if (
+              item.start !== chunk[index].start ||
+              item.end !== chunk[index].end
+            ) {
+              throw new Error("Timestamp mismatch at index " + index);
+            }
+          });
+
+          translations.push(...parsed);
+          break; // Success, exit retry loop
+        } catch (error) {
+          console.error(`Retrying... Attempts left: ${attempts}`);
+        }
       }
-      if (
-        item.start !== subtitles[index].start ||
-        item.end !== subtitles[index].end
-      ) {
-        throw new Error("Timestamp mismatch at index " + index);
-      }
-    });
 
-    return parsed;
+      if (!parsed || parsed.length !== chunk.length) {
+        throw new Error("Subtitle translation failed after multiple retries.");
+      }
+    }
+
+    return translations;
   } catch (error) {
     console.error("Translation Error:", {
       message: error.message,

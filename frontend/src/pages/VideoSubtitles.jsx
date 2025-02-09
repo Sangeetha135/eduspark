@@ -7,6 +7,8 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const subtitleContainerRef = useRef(null);
 
+
+  // Fetch subtitles in selected language
   useEffect(() => {
     const fetchSubtitles = async () => {
       try {
@@ -25,6 +27,7 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
     fetchSubtitles();
   }, [videoId, selectedLanguage]);
 
+  // Auto-scroll subtitles
   useEffect(() => {
     const updateSubtitle = () => {
       if (!videoRef.current) return;
@@ -63,13 +66,13 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
   }, [subtitles, videoRef, currentSubtitleIndex]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-      <div>
-        <label style={{ fontWeight: "bold" }}>Select Language:</label>
+    <div style={styles.container}>
+      <div style={styles.languageSelector}>
+        <label>Select Language:</label>
         <select
           value={selectedLanguage}
           onChange={(e) => setSelectedLanguage(e.target.value)}
-          style={{ marginLeft: "10px", padding: "5px" }}
+          style={styles.selectBox}
         >
           <option value="English">English</option>
           <option value="Spanish">Spanish</option>
@@ -79,31 +82,16 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
       </div>
 
       {/* Subtitles Container */}
-      <div
-        ref={subtitleContainerRef}
-        style={{
-          width: "400px",
-          height: "80px", // Increased height for better visibility
-          overflowY: "auto",
-          border: "1px solid #ddd",
-          padding: "10px",
-          borderRadius: "5px",
-          background: "#f9f9f9",
-        }}
-      >
+      <div ref={subtitleContainerRef} style={styles.subtitleBox}>
         {subtitles.length === 0 ? (
-          <p>Loading subtitles...</p>
+          <p style={styles.loadingText}>Loading subtitles...</p>
         ) : (
           subtitles.map((subtitle, index) => (
             <div
               key={index}
               style={{
-                padding: "8px",
-                margin: "4px 0",
-                fontWeight: currentSubtitleIndex === index ? "bold" : "normal",
-                backgroundColor: currentSubtitleIndex === index ? "#ffff99" : "transparent",
-                transition: "all 0.3s ease",
-                borderRadius: "4px",
+                ...styles.subtitleItem,
+                ...(currentSubtitleIndex === index ? styles.activeSubtitle : {}),
               }}
             >
               {subtitle.text}
@@ -113,6 +101,66 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
       </div>
     </div>
   );
+};
+
+// Inline CSS styles
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    alignItems: "center",
+    background: "#0A3D62",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+    color: "white",
+  },
+  languageSelector: {
+    display: "flex",
+    alignItems: "center",
+    fontWeight: "bold",
+    color: "#FFD700",
+  },
+  selectBox: {
+    marginLeft: "10px",
+    padding: "5px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+    cursor: "pointer",
+    backgroundColor: "#fff",
+    color: "#333",
+  },
+  subtitleBox: {
+    width: "400px",
+    height: "340px",
+    overflowY: "auto",
+    border: "2px solid #FFD700",
+    padding: "10px",
+    borderRadius: "8px",
+    background: "#000",
+    textAlign: "center",
+    scrollBehavior: "smooth",
+  },
+  subtitleItem: {
+    padding: "10px",
+    margin: "4px 0",
+    fontWeight: "normal",
+    color: "white",
+    transition: "all 0.3s ease",
+    borderRadius: "4px",
+  },
+  activeSubtitle: {
+    fontWeight: "bold",
+    backgroundColor: "#FFD700",
+    color: "black",
+    transition: "all 0.3s ease-in-out",
+  },
+  loadingText: {
+    color: "#fff",
+    fontStyle: "italic",
+  },
 };
 
 export default VideoSubtitles;
