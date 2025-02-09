@@ -148,6 +148,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: "24px",

@@ -30,7 +30,7 @@ const Register = () => {
             }
 
             if (res.status === 201) {
-                navigate("/");
+                navigate("/login");
             } else {
                 navigate("/register");
             }
@@ -89,6 +89,13 @@ const Register = () => {
                             style={styles.checkbox}
                         />
                         <label htmlFor="educator" style={styles.label}>Register as an Educator</label>
+                    </div>
+
+                    {/* Link to Login Page */}
+                    <div style={styles.loginLink}>
+                        <p style={styles.linkText}>
+                            Already have an account? <span onClick={() => navigate("/login")} style={styles.link}>Login here</span>
+                        </p>
                     </div>
 
                     <button type="submit" style={styles.button}>
@@ -173,6 +180,17 @@ const styles = {
     label: {
         fontSize: "14px",
         color: "#0072ff",
+    },
+    loginLink: {
+        marginBottom: "10px",
+    },
+    linkText: {
+        fontSize: "14px",
+    },
+    link: {
+        color: "#0072ff",
+        cursor: "pointer",
+        textDecoration: "underline",
     },
     button: {
         width: "100%",

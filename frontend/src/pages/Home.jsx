@@ -40,12 +40,12 @@ const Home = () => {
       <div style={userInfo?.isStudent ? styles.contentWithSidebar : styles.contentWithoutSidebar}>
         {userInfo?.isStudent && (
           <aside style={styles.sidebar}>
-            <h3>Menu</h3>
+            {/* <h3>Menu</h3> */}
             <ul style={styles.sidebarList}>
               <li><a href="/home" style={styles.sidebarLink}>Home</a></li>
-              <li><a href="/open-doubts" style={styles.sidebarLink}>Open Doubts</a></li>
+              <li><a href="/queries" style={styles.sidebarLink}>Open Doubts</a></li>
               <li><a href="/liked-videos" style={styles.sidebarLink}>Liked Videos</a></li>
-              <li><a href="/others" style={styles.sidebarLink}>Others</a></li>
+              {/* <li><a href="/others" style={styles.sidebarLink}>Others</a></li> */}
             </ul>
           </aside>
         )}

@@ -9,6 +9,8 @@ import axios from "axios";
 import VideoDetail from "./pages/VideoDetail";
 import QuizDisplay from "./pages/QuizDisplay";
 import LandingPage from "./pages/LandingPage";
+import Queries from "./pages/Queries"
+import ChatAnswers from "./pages/ChatAnswers"
 
 function App() {
   const { userInfo, setUserInfo } = useAppStore();
@@ -63,7 +65,8 @@ function App() {
         <Route path="/home/uploadvideo" element={<UploadVideo />} />
         <Route path="/video/:id" element={<VideoDetail />} />
         <Route path="/video/takequiz/:id" element={<QuizDisplay/>} />
-
+        <Route path="/queries" element={<Queries/>} />
+        <Route path="/chat/:id" element={<ChatAnswers/>} />
       </Routes>
     </Router>
     </>

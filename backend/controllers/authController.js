@@ -2,7 +2,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Educator from "../models/Educator.js";
+import dotenv from "dotenv";
+dotenv.config();
 import axios from "axios";
+
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -56,15 +59,17 @@ export const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        isStudent: user.isStudent,
-      },
-    });
+    res
+      .status(200)
+      .json({
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          isStudent: user.isStudent,
+        },
+      });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -97,6 +102,59 @@ export const getuserinfo = async (req, res) => {
         },
       });
     }
+  }
+};
+
+export const loginEducator = async (req, res) => {
+  console.log("Login Displayed.....");
+  const { email, password } = req.body;
+
+  try {
+    const educator = await Educator.findOne({ email });
+    if (!educator) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, educator.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign(
+      { userId: educator._id, email: educator.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res
+      .status(200)
+      .json({
+        token,
+        user: {
+          id: educator._id,
+          username: educator.username,
+          email: educator.email,
+          isStudent: educator.isStudent,
+        },
+      });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    console.log("Logged Out....");
+    res.cookie("jwt", "", {
+      dur: 0,
+      secure: true,
+      sameSite: "None",
+    });
+    return res.status(200).send("Logout Successful");
+  } catch (error) {
+    console.error("Error logging out", error);
+    res.status(500).json({ message: "Error Logging out", error });
   }
 };
 
@@ -133,62 +191,14 @@ export const getchat = async (req, res) => {
     console.error("Error:", error);
     if (error.response) {
       console.error("Error details:", error.response.data);
-      res.status(error.response.status).json({
-        error: error.response.data.error.message || "Failed to fetch response",
-      });
+      res
+        .status(error.response.status)
+        .json({
+          error:
+            error.response.data.error.message || "Failed to fetch response",
+        });
     } else {
       res.status(500).json({ error: "Failed to fetch response" });
     }
-  }
-};
-
-export const loginEducator = async (req, res) => {
-  console.log("Login Displayed.....");
-  const { email, password } = req.body;
-
-  try {
-    const educator = await Educator.findOne({ email });
-    if (!educator) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, educator.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const token = jwt.sign(
-      { userId: educator._id, email: educator.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.status(200).json({
-      token,
-      user: {
-        id: educator._id,
-        username: educator.username,
-        email: educator.email,
-        isStudent: educator.isStudent,
-      },
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
-  }
-};
-
-export const logout = async (req, res) => {
-  try {
-    console.log("Logged Out....");
-    res.cookie("jwt", "", {
-      dur: 0,
-      secure: true,
-      sameSite: "None",
-    });
-    return res.status(200).send("Logout Successful");
-  } catch (error) {
-    console.error("Error logging out", error);
-    res.status(500).json({ message: "Error Logging out", error });
   }
 };

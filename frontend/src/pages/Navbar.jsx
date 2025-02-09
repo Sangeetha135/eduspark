@@ -25,7 +25,7 @@ const Navbar = () => {
 
   return (
     <nav style={styles.navbar}>
-      <h1 style={styles.title}>EduSpark...</h1>
+      <h1 style={styles.title}>EduSpark</h1>
       <div style={styles.navLinks}>
         {/* Educator-specific options */}
         {userInfo && !userInfo.isStudent && (
@@ -53,7 +53,7 @@ const styles = {
     top: 0,
     left: 0,
     width: "100%",
-    backgroundColor: "lightpink",
+    backgroundColor: "lightblue",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "0 20px",

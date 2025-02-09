@@ -1,29 +1,50 @@
-const moongoose=require("mongoose");
+import mongoose from "mongoose";
 
-const {Schema}=mongoose;
+const { Schema } = mongoose;
 
-const QuerSchema=new Schema({
-    userid:{
-        type:Object.Types.Schema,
-        ref:"User"
+const QuerSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+
+  topic: {
+    type: String,
+  },
+  answers: [
+    {
+      username: {
+        type: String,
+        required: true,
+      },
+      isStudent: {
+        type: Boolean,
+        default: false,
+      },
+      answer: {
+        type: String,
+        required: true,
+      },
+      replaydate: {
+        type: Date,
+        default: () =>
+          new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      },
     },
-    question:{
-        type:String,
-        required:true
-    },
-    answers:[{
-        user:{
-            type:Object.Types.Schema,
-            ref:"User"
-
-        },
-        answer:{
-            type:String,
-            required:true
-        },
-
-    }]
+  ],
+  createdAt: {
+    type: Date,
+    default: () =>
+      new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+  },
 });
 
-
-module.exports = mongoose.model("QuerSchema", QuerSchema);
+export default mongoose.model("QuerSchema", QuerSchema);
