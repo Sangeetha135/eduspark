@@ -3,7 +3,6 @@ import fs from "fs/promises";
 import path from "path";
 import Video from "../models/Video.js";
 import QuizQue from "../models/QuizQue.js";
-import Query from "../models/Query.js";
 import { exec } from "child_process";
 import Educator from "../models/Educator.js";
 import {
@@ -17,7 +16,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 import Comment from "../models/comment.js";
-
+import Query from "../models/Query.js";
+import { response } from "express";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
