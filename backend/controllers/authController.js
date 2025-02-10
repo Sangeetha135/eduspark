@@ -59,17 +59,15 @@ export const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res
-      .status(200)
-      .json({
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          isStudent: user.isStudent,
-        },
-      });
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isStudent: user.isStudent,
+      },
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -126,17 +124,15 @@ export const loginEducator = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res
-      .status(200)
-      .json({
-        token,
-        user: {
-          id: educator._id,
-          username: educator.username,
-          email: educator.email,
-          isStudent: educator.isStudent,
-        },
-      });
+    res.status(200).json({
+      token,
+      user: {
+        id: educator._id,
+        username: educator.username,
+        email: educator.email,
+        isStudent: educator.isStudent,
+      },
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -191,14 +187,21 @@ export const getchat = async (req, res) => {
     console.error("Error:", error);
     if (error.response) {
       console.error("Error details:", error.response.data);
-      res
-        .status(error.response.status)
-        .json({
-          error:
-            error.response.data.error.message || "Failed to fetch response",
-        });
+      res.status(error.response.status).json({
+        error: error.response.data.error.message || "Failed to fetch response",
+      });
     } else {
       res.status(500).json({ error: "Failed to fetch response" });
     }
+  }
+};
+
+export const getstudentprofile = async (req, res) => {
+  const query = req.params.id;
+  const user = await User.findById(query);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  } else {
+    res.status(200).json(user);
   }
 };

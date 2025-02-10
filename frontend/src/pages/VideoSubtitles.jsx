@@ -75,9 +75,14 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
           style={styles.selectBox}
         >
           <option value="English">English</option>
+          <option value="Telugu">Telugu</option>
+          <option value="Hindi">Hindi</option>
           <option value="Spanish">Spanish</option>
           <option value="French">French</option>
-          <option value="Telugu">Telugu</option>
+          {/* <option value="Malayalam">Malayalam</option>
+          <option value="Tamil">Tamil</option>
+          <option value="Kannada">Kannada</option>
+          <option value="Portuguese">Portuguese</option> */}
         </select>
       </div>
 

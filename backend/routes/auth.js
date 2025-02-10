@@ -8,6 +8,7 @@ import {
   registerEducator,
   getuserinfo,
   getchat,
+  getstudentprofile,
 } from "../controllers/authController.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
 import { get } from "mongoose";
@@ -21,5 +22,6 @@ router.post("/loginEducator", loginEducator);
 router.post("/registerEducator", registerEducator);
 router.get("/getuserinfo", verifyToken, getuserinfo);
 router.post("/chat", getchat);
+router.get("/student-profile/:id", getstudentprofile);
 
 export default router;

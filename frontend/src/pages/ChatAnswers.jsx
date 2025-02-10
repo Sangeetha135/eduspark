@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppStore } from "../store/index";
+import Navbar from "./Navbar";
 
 const ChatAnswers = () => {
   const { id } = useParams(); // Get question ID from URL
@@ -56,6 +57,7 @@ const ChatAnswers = () => {
 
   return (
     <div style={styles.container}>
+      <Navbar/>
       {question ? (
         <>
           <h2 style={styles.title}>{question.title}</h2>

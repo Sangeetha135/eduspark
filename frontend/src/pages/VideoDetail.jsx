@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import VideoComment from "./VideoComment";
 import VideoSubtitles from "./VideoSubtitles";
+import RelatedVideos from "./RelatedVideos";
 
 const VideoDetail = () => {
   const { id } = useParams();
@@ -101,16 +102,19 @@ const VideoDetail = () => {
         </div>
 
         {/* Summary Box */}
-        <div style={styles.summaryBox}>Summary will be displayed here.</div>
+        {/* <div style={styles.summaryBox}>Summary will be displayed here.</div> */}
 
         {/* Quiz Section */}
         <div style={styles.quizSection}>
           <button style={styles.button} onClick={takeQuiz}>Take Quiz</button>
         </div>
 
-        {/* Comments Section (No Overlap with Navbar) */}
         <div style={styles.commentsSection}>
         <VideoComment videoId={video} userId={user?.id} />
+        </div>
+        <div style={styles.commentsSection}>
+            <RelatedVideos videoId={id} />
+
         </div>
       </div>
     </>
@@ -119,7 +123,6 @@ const VideoDetail = () => {
 
 export default VideoDetail;
 
-// Styles Object
 const styles = {
   container: {
     width: "85%",

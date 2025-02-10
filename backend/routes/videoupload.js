@@ -12,6 +12,7 @@ import {
   putquery,
   setanswer,
   getquery,
+  relatedvideos,
 } from "../controllers/videouploadController.js";
 
 import { Router } from "express";
@@ -51,4 +52,5 @@ router.get("/query/getqueries", getqueries);
 router.put("/putquery/:name", putquery);
 router.put("/query/answer/:id", setanswer);
 router.get("/query/:id", getquery);
+router.get("/related/:videoId", relatedvideos);
 export default router;

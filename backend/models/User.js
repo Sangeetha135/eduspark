@@ -1,43 +1,26 @@
-import mongoose, { SchemaType } from "mongoose";
+import mongoose from "mongoose";
+
 const StudentSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
+  email: { type: String, required: true },
   password: { type: String, required: true },
-  score: {
-    type: Number,
-    default: 0,
-  },
-  quizparticepated: {
-    type: Number,
-    default: 0,
-  },
-  level: {
-    type: Number,
-    default: 10,
-  },
-  topics: [
+  score: { type: Number, default: 0 },
+  quizParticipated: { type: Number, default: 0 },
+  level: { type: Number, default: 10 },
+  isStudent: { type: Boolean, default: true },
+  streak: { type: Number, default: 0 }, // Current streak
+  lastActiveDate: { type: Date }, // Last login date
+  streakHistory: [
     {
-      text: {
-        type: String,
-      },
+      streak: Number,
+      startDate: Date,
+      endDate: Date,
     },
   ],
-  isStudent: {
-    type: Boolean,
-    default: true,
-  },
-  savedvideos: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Video",
-    },
-  ],
-  queries: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Query",
-    },
-  ],
+
+  topics: [{ type: String }],
+
+  // Stores past streaks
 });
 
 export default mongoose.model("Student", StudentSchema);

@@ -3,21 +3,15 @@ import { useState } from "react";
 
 const VideoCard = ({ video }) => {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleClick = () => {
     navigate(`/video/${video._id}`);
   };
 
-  const toggleMenu = (e) => {
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
-
   return (
     <div style={styles.card} onClick={handleClick}>
       <div style={styles.thumbnailContainer}>
-        <img src={video.thumbnail} alt="Thumbnail" style={styles.thumbnail} />
+        <video src={video.videolink} alt={video.title} style={styles.video} />
       </div>
 
       <div style={styles.videoInfo}>
@@ -26,16 +20,7 @@ const VideoCard = ({ video }) => {
           <p style={styles.videoMeta}>⭐ {video.rating.toFixed(1)}</p>
         </div>
 
-        {/* 3-dot menu */}
-        <div style={styles.menuContainer} onClick={toggleMenu}>
-          <span style={styles.dots}>⋮</span>
-          {menuOpen && (
-            <div style={styles.dropdownMenu}>
-              <p style={styles.menuItem}>➕ Add to Watchlist</p>
-              <p style={styles.menuItem}>❤️ Add to Favourites</p>
-            </div>
-          )}
-        </div>
+        <p style={styles.authorName}>{video.user.username}</p>
       </div>
     </div>
   );
@@ -54,20 +39,15 @@ const styles = {
     boxShadow: "0 1px 5px rgba(0,0,0,0.1)",
     overflow: "hidden",
   },
-  cardHover: {
-    transform: "scale(1.03)",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.2)", 
-  },
   thumbnailContainer: {
     width: "100%",
     height: "180px",
     overflow: "hidden",
     borderRadius: "10px",
   },
-  thumbnail: {
+  video: {
     width: "100%",
-    height: "100%",
-    objectFit: "cover",
+    height: "150px",
     display: "block",
   },
   videoInfo: {
@@ -93,36 +73,16 @@ const styles = {
     color: "#606060",
     margin: 0,
   },
-  menuContainer: {
-    position: "relative",
-    cursor: "pointer",
-  },
-  dots: {
-    fontSize: "18px",
-    color: "#606060",
-    padding: "5px",
-  },
-  dropdownMenu: {
-    position: "absolute",
-    top: "25px",
-    right: "0",
-    background: "#fff",
-    borderRadius: "8px",
-    padding: "8px 10px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-    zIndex: 10,
-    minWidth: "160px",
-    textAlign: "left",
-  },
-  menuItem: {
-    color: "#333",
+  // Styled Author Name
+  authorName: {
     fontSize: "14px",
-    padding: "8px",
-    cursor: "pointer",
-    transition: "background 0.2s",
-  },
-  menuItemHover: {
-    background: "#f5f5f5",
+    fontWeight: "600",
+    color: "#0073e6",
+    margin: "0",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    backgroundColor: "#f0f7ff",
+    textAlign: "right",
   },
 };
 

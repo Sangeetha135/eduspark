@@ -11,6 +11,7 @@ import QuizDisplay from "./pages/QuizDisplay";
 import LandingPage from "./pages/LandingPage";
 import Queries from "./pages/Queries"
 import ChatAnswers from "./pages/ChatAnswers"
+import StudentProfile from "./pages/StudentProfile";
 
 function App() {
   const { userInfo, setUserInfo } = useAppStore();
@@ -54,7 +55,7 @@ function App() {
 
   if (loading) return <div>Loading.....</div>; 
 
-  return (<>
+  return (<div style={appStyle}>
   
     <Router>
       <Routes>
@@ -67,10 +68,18 @@ function App() {
         <Route path="/video/takequiz/:id" element={<QuizDisplay/>} />
         <Route path="/queries" element={<Queries/>} />
         <Route path="/chat/:id" element={<ChatAnswers/>} />
+        <Route path="/student" element={<StudentProfile/>} />
       </Routes>
     </Router>
-    </>
+    </div>
   );
 }
+
+const appStyle = {
+  backgroundColor: "rgb(165, 164, 164)",
+  backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")',
+  minHeight: "100vh",
+  width: "100%",
+};
 
 export default App;

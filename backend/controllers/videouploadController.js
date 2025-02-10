@@ -264,3 +264,38 @@ export const getquery = async (req, res) => {
   const query = await Query.findById(id);
   res.status(200).json(query);
 };
+
+export const relatedvideos = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const currentVideo = await Video.findById(videoId).populate(
+      "user",
+      "username"
+    );
+
+    if (!currentVideo) {
+      return res.status(404).json({ error: "Video not found" });
+    }
+
+    const relatedVideos = await Video.find({
+      _id: { $ne: videoId },
+      $or: [
+        { topic: currentVideo.topic },
+        { language: currentVideo.language },
+        { "user.username": currentVideo.user.username },
+        {
+          description: {
+            $regex: currentVideo.description.split(" ")[0],
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .sort({ rating: -1 })
+      .limit(5);
+
+    res.json(relatedVideos);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching related videos" });
+  }
+};
