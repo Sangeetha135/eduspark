@@ -7,7 +7,7 @@ import { useState } from "react";
 const Navbar = () => {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
 
   const handleLogout = async () => {
     try {
@@ -38,7 +38,6 @@ const Navbar = () => {
           </>
         )}
 
-        {/* Profile Dropdown */}
         <div style={styles.profileContainer} onClick={() => setDropdownOpen(!dropdownOpen)}>
           <div style={styles.profilePic}>{userInfo?.username?.charAt(0).toUpperCase()}</div>
           {dropdownOpen && (

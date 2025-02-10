@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const RelatedVideos = ({ videoId }) => {
+    const navigate=useNavigate();
   const [relatedVideos, setRelatedVideos] = useState([]);
-
+  const navigateToVideo = (videoId) => {
+    navigate(`/video/${videoId}`);
+    window.location.reload(); // Forces reloading the page
+  };
   useEffect(() => {
     const fetchRelatedVideos = async () => {
       try {
@@ -34,7 +38,11 @@ const RelatedVideos = ({ videoId }) => {
             <p><strong>Rating:</strong> {video.rating?.toFixed(1)}</p>
             <p><strong>Language:</strong> {video.language}</p>
             <p><strong>Uploaded by:</strong> {video.user?.username}</p>
-            <Link to={`/video/${video._id}`} style={styles.button}>Watch Video</Link>
+            {/* <Link to={`/video/${video._id}`} style={styles.button}>Watch Video</Link> */}
+
+            <button onClick={() => navigateToVideo(video._id)} style={styles.button}>
+  Watch Video
+</button>
           </div>
         ))}
       </div>
@@ -44,7 +52,6 @@ const RelatedVideos = ({ videoId }) => {
 
 export default RelatedVideos;
 
-// CSS-in-JS styles
 const styles = {
   container: { marginTop: "40px", textAlign: "center" },
   heading: { fontSize: "22px", marginBottom: "20px", color: "#333" },

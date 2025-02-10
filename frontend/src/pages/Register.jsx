@@ -91,7 +91,6 @@ const Register = () => {
                         <label htmlFor="educator" style={styles.label}>Register as an Educator</label>
                     </div>
 
-                    {/* Link to Login Page */}
                     <div style={styles.loginLink}>
                         <p style={styles.linkText}>
                             Already have an account? <span onClick={() => navigate("/login")} style={styles.link}>Login here</span>

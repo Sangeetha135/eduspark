@@ -8,7 +8,7 @@ import Navbar from "./Navbar";
 import VideoComment from "./VideoComment";
 import VideoSubtitles from "./VideoSubtitles";
 import RelatedVideos from "./RelatedVideos";
-
+import ChatBot from "./ChatBot";
 const VideoDetail = () => {
   const { id } = useParams();
   const [video, setVideo] = useState(null);
@@ -19,12 +19,13 @@ const VideoDetail = () => {
   const { userInfo } = useAppStore();
   const [user] = useState(userInfo || "");
   const videoRef = useRef(null);
-
+  const [showChatBot, setShowChatBot] = useState(false);
   useEffect(() => {
     const fetchVideo = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/video/getvideo/${id}`);
         setVideo(response.data);
+        videoRef.current?.load(); // Reload video when changing
       } catch (error) {
         console.error("Error fetching video:", error);
       }
@@ -56,7 +57,6 @@ const VideoDetail = () => {
       <div style={styles.container}>
         <h1 style={styles.title}>{video.title}</h1>
 
-        {/* Video and Subtitles Section */}
         <div style={styles.contentWrapper}>
           <div style={styles.videoSection}>
             <video controls style={styles.video} ref={videoRef}>
@@ -69,14 +69,12 @@ const VideoDetail = () => {
           </div>
         </div>
 
-        {/* Video Details */}
         <div style={styles.detailsSection}>
           <p><strong>Uploaded by:</strong> {video.user?.username}</p>
           <p><strong>Rating:</strong> {video.rating?.toFixed(1)}</p>
           <p><strong>Description:</strong> {video.description}</p>
         </div>
 
-        {/* Rating System */}
         <div style={styles.ratingSection}>
           <p><strong>Rate this video:</strong></p>
           <div style={styles.stars}>
@@ -101,10 +99,8 @@ const VideoDetail = () => {
           {submitted && <p style={styles.thankYou}>Thank you for your rating!</p>}
         </div>
 
-        {/* Summary Box */}
         {/* <div style={styles.summaryBox}>Summary will be displayed here.</div> */}
 
-        {/* Quiz Section */}
         <div style={styles.quizSection}>
           <button style={styles.button} onClick={takeQuiz}>Take Quiz</button>
         </div>
@@ -116,6 +112,12 @@ const VideoDetail = () => {
             <RelatedVideos videoId={id} />
 
         </div>
+        
+        
+        <button style={styles.aiButton} onClick={() => setShowChatBot(!showChatBot)}>AI</button>
+        {showChatBot && <ChatBot onClose={() => setShowChatBot(false)} />}
+      
+
       </div>
     </>
   );
@@ -134,6 +136,26 @@ const styles = {
     textAlign: "center",
     fontFamily: "Arial, sans-serif",
   },
+
+  aiButton: {
+    borderRadius: "50%",
+    height: "50px",
+    width: "50px",
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    backgroundColor: "#007bff",
+    color: "white",
+    fontSize: "18px",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+
+
   title: {
     fontSize: "24px",
     fontWeight: "bold",

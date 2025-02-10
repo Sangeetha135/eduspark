@@ -100,7 +100,6 @@ const LandingPage = () => {
 
   return (
     <div style={styles.homepage}>
-      {/* Header */}
       <header style={styles.header}>
         <div style={styles.logo}>Eduspark</div>
         <div style={styles.buttons}>
@@ -109,20 +108,16 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Divider */}
       <hr style={styles.hr} />
 
-      {/* Middle Cap Image */}
       <img src={capMiddle} alt="Graduation Cap Middle" style={styles.capMiddle} />
 
-      {/* Main Content */}
       <div style={styles.content}>
         <p>Artificial Intelligence is revolutionizing education.</p>
         <p>AI-powered tools provide personalized learning experiences.</p>
         <p>Students and teachers benefit from smart automation.</p>
       </div>
 
-      {/* Background Images */}
       <div style={styles.backgroundImages}>
         <img src={leftImage} alt="Graduation Left" style={{ ...styles.image, ...styles.leftImage }} />
         <img src={rightImage} alt="Graduation Right" style={{ ...styles.image, ...styles.rightImage }} />

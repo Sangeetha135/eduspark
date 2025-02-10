@@ -10,7 +10,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         style={{
           padding: "10px",
-          width: "600px", // Updated width for a wider bar
+          width: "600px",
           borderRadius: "5px",
           border: "1px solid #ccc",
         }}

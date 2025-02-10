@@ -156,7 +156,7 @@ export const logout = async (req, res) => {
 
 export const getchat = async (req, res) => {
   try {
-    const query = req.body.temp;
+    const query = req.body.query;
     console.log("Received query:", query);
 
     const response = await axios.post(

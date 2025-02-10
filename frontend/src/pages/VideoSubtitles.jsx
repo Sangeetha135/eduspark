@@ -7,8 +7,6 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const subtitleContainerRef = useRef(null);
 
-
-  // Fetch subtitles in selected language
   useEffect(() => {
     const fetchSubtitles = async () => {
       try {
@@ -17,7 +15,7 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
         );
         if (response.status === 200) {
           setSubtitles(response.data);
-          setCurrentSubtitleIndex(-1); // Reset current subtitle when language changes
+          setCurrentSubtitleIndex(-1); 
         }
       } catch (error) {
         console.error("Error fetching subtitles:", error);
@@ -27,7 +25,6 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
     fetchSubtitles();
   }, [videoId, selectedLanguage]);
 
-  // Auto-scroll subtitles
   useEffect(() => {
     const updateSubtitle = () => {
       if (!videoRef.current) return;
@@ -36,18 +33,17 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
       const newIndex = subtitles.findIndex(
         (s) => 
           currentTime >= parseFloat(s.start) && 
-          currentTime < parseFloat(s.end) // Use < to avoid boundary overlaps
+          currentTime < parseFloat(s.end)
       );
 
       if (newIndex !== currentSubtitleIndex) {
         setCurrentSubtitleIndex(newIndex);
 
-        // Auto-scroll to active subtitle
         if (newIndex !== -1 && subtitleContainerRef.current) {
           const activeElement = subtitleContainerRef.current.children[newIndex];
           activeElement?.scrollIntoView({
             behavior: "smooth",
-            block: "nearest", // Better for small containers
+            block: "nearest",
           });
         }
       }
@@ -86,7 +82,6 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
         </select>
       </div>
 
-      {/* Subtitles Container */}
       <div ref={subtitleContainerRef} style={styles.subtitleBox}>
         {subtitles.length === 0 ? (
           <p style={styles.loadingText}>Loading subtitles...</p>
@@ -108,7 +103,6 @@ const VideoSubtitles = ({ videoId, videoRef }) => {
   );
 };
 
-// Inline CSS styles
 const styles = {
   container: {
     display: "flex",

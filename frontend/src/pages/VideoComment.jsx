@@ -186,7 +186,7 @@ const styles = {
     marginTop: "10px",
     justifyContent: "flex-end",
     width: "100%",
-    alignItems: "center", // Ensures proper alignment
+    alignItems: "center",
   },
   replyInput: {
     flexGrow: 1,

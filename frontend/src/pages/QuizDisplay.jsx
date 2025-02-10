@@ -62,7 +62,6 @@ export default function QuizDisplay() {
     navigate(`/video/${id}`);
   };
 
-  /** ✅ STYLING OBJECT */
   const styles = {
     pageContainer: {
       width: "100vw",

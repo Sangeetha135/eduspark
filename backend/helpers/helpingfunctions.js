@@ -70,7 +70,6 @@ export const generateQuiz = async (storyText) => {
     const generatedText = candidate.content.parts[0]?.text?.trim() || "";
     console.log("Raw AI Response:", generatedText);
 
-    // Extract JSON from AI response
     const jsonMatch = generatedText.match(/\[.*\]/s);
     if (!jsonMatch) {
       throw new Error("No valid JSON found in AI response");
@@ -89,17 +88,19 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const API_URL =
   "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent";
 
-// Function to split array into chunks
 const chunkArray = (arr, size) => {
   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
     arr.slice(i * size, i * size + size)
   );
 };
 
-// Extract generated text
 export const generatesubtitle = async (subtitles, language) => {
   try {
-    const subtitleChunks = chunkArray(subtitles, 10); // Process 10 subtitles at a time
+    if (language === "English") {
+      return subtitles;
+    }
+
+    const subtitleChunks = chunkArray(subtitles, 10);
     let translations = [];
 
     for (const chunk of subtitleChunks) {
@@ -132,14 +133,12 @@ export const generatesubtitle = async (subtitles, language) => {
           const generatedText =
             response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-          // Extract JSON safely
           const jsonStart = generatedText.indexOf("[");
           const jsonEnd = generatedText.lastIndexOf("]") + 1;
           const cleanedText = generatedText.substring(jsonStart, jsonEnd);
 
           parsed = JSON.parse(cleanedText);
 
-          // Validate JSON structure
           if (!Array.isArray(parsed) || parsed.length !== chunk.length) {
             throw new Error("Array length mismatch or invalid JSON");
           }
@@ -161,7 +160,7 @@ export const generatesubtitle = async (subtitles, language) => {
           });
 
           translations.push(...parsed);
-          break; // Success, exit retry loop
+          break;
         } catch (error) {
           console.error(`Retrying... Attempts left: ${attempts}`);
         }

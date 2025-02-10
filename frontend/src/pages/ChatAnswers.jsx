@@ -5,14 +5,13 @@ import { useAppStore } from "../store/index";
 import Navbar from "./Navbar";
 
 const ChatAnswers = () => {
-  const { id } = useParams(); // Get question ID from URL
+  const { id } = useParams(); 
   const [question, setQuestion] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [newAnswer, setNewAnswer] = useState({ answer: "", isStudent: true });
   const { userInfo } = useAppStore();
   const [user] = useState(userInfo || "");
 
-  // Fetch question and answers from backend
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
@@ -27,12 +26,10 @@ const ChatAnswers = () => {
     fetchQuestion();
   }, [id]);
 
-  // Handle input change
   const handleChange = (e) => {
     setNewAnswer({ ...newAnswer, [e.target.name]: e.target.value });
   };
 
-  // Submit answer to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newAnswer.answer) {
@@ -47,8 +44,7 @@ const ChatAnswers = () => {
         const response = await axios.get(`http://localhost:5000/video/query/${id}`);
       setAnswers(response.data.answers); 
 
-      // Reset form
-      setNewAnswer({ answer: "", isStudent: true }); // Reset form
+      setNewAnswer({ answer: "", isStudent: true }); 
       } catch (error) {
         console.error("Error submitting answer:", error);
       }
@@ -79,7 +75,6 @@ const ChatAnswers = () => {
             <p>No answers yet.</p>
           )}
 
-          {/* Answer Form */}
           <form onSubmit={handleSubmit} style={styles.form}>
             <textarea
               name="answer"
@@ -99,7 +94,6 @@ const ChatAnswers = () => {
   );
 };
 
-// Styles
 const styles = {
   container: {
     padding: "2rem",

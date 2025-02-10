@@ -37,7 +37,6 @@ const Queries = () => {
           topic: newQuestion.topic,
         });
 
-        // Refresh questions after posting
         const response = await axios.get("http://localhost:5000/video/query/getqueries");
         setQuestions(response.data);
         setNewQuestion({ title: "", description: "", postedBy: "" });
@@ -86,11 +85,11 @@ const Queries = () => {
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>Your Name</label>
+                <label style={styles.label}>Topic</label>
                 <input
                   type="text"
                   name="postedBy"
-                  placeholder="Enter your name"
+                  placeholder="Enter related topic"
                   value={newQuestion.postedBy}
                   onChange={handleChange}
                   style={styles.input}
@@ -117,7 +116,7 @@ const Queries = () => {
           <div
             key={question.id}
             style={styles.card}
-            onClick={() => navigate(`/chat/${question._id}`)} // ✅ Navigate on click
+            onClick={() => navigate(`/chat/${question._id}`)} 
           >
             <h3 style={styles.cardTitle}>{question.title}</h3>
             <p style={styles.cardDescription}>{question.description}</p>
